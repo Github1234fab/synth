@@ -5,7 +5,6 @@
     let autoWah;
     let chorus;
     let reverb;
-
     let useReverb = false;
     let useChorus = false;
     let useWah = false;
@@ -15,6 +14,7 @@
     let activeChorus = false;
     let activeWah = false;
 
+    // Contrôles pour les oscillateurs
     const oscillatorTypes = ['sine', 'square', 'sawtooth', 'triangle', 'pulse'];
     let selectedOscillator = 'sine';
     let frequency = 440;
@@ -23,20 +23,16 @@
     let attack = 0.01;
     let release = 1;
 
-    // Initialisation des effets
-    function initEffects() {
-        if (!autoWah) autoWah = new Tone.AutoWah(50, 6, -90).toDestination();
-        if (!chorus) chorus = new Tone.Chorus(10, 4.5, 0.5).toDestination();
-        if (!reverb) reverb = new Tone.Reverb({ decay }).toDestination();
-    }
+    function play(note) {
+        if (Tone.context.state !== 'running') {
+            Tone.start();
+        }
 
-    function updateSynth() {
-        // Créer ou mettre à jour le synthétiseur
         if (!synth) {
             synth = new Tone.Synth({
                 oscillator: { type: selectedOscillator, width: pulseWidth },
                 envelope: { attack, release },
-            }).toDestination();
+            });
         } else {
             synth.oscillator.type = selectedOscillator;
             if (selectedOscillator === 'pulse') {
@@ -48,12 +44,11 @@
             synth.envelope.release = release;
         }
 
-        // Reconnecter les effets si nécessaire
-        reconnectEffects();
-    }
+        if (!autoWah) autoWah = new Tone.AutoWah(50, 6, -90);
+        if (!chorus) chorus = new Tone.Chorus(10, 4.5, 0.5);
+        if (!reverb) reverb = new Tone.Reverb({ decay }).toDestination();
 
-    function reconnectEffects() {
-        // Déconnecter tous les effets
+        // Connect effects conditionally
         synth.disconnect();
 
         let effectsChain = synth;
@@ -71,40 +66,25 @@
         } else {
             effectsChain.connect(Tone.Destination);
         }
-    }
 
-    function play(note) {
-        if (Tone.context.state !== 'running') {
-            Tone.start();
-        }
-
-        // Met à jour et joue la note
-        updateSynth();
         synth.triggerAttackRelease(note, '8n');
     }
 
     function toggleReverb() {
         useReverb = !useReverb;
         activeReverb = !activeReverb;
-        reconnectEffects();
     }
 
     function toggleChorus() {
         useChorus = !useChorus;
         activeChorus = !activeChorus;
-        reconnectEffects();
     }
 
     function toggleWah() {
         useWah = !useWah;
         activeWah = !activeWah;
-        reconnectEffects();
     }
-
-    // Initialisation
-    initEffects();
 </script>
-
 
 
         <!-- Interface utilisateur -->
