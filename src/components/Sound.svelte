@@ -378,7 +378,7 @@
 		border-radius: 8px;
 	}
 
-@media (orientation: landscape) {
+@media screen and (max-width: 768px)  {
         .container-interface{
                 margin-top: 5px;
         }
