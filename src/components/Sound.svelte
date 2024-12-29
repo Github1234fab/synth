@@ -292,17 +292,7 @@
 		border: 10px solid rgb(25, 16, 16);
 		border-radius: 8px;
 	}
-	.activeNoteDisplay {
-		color: rgb(155, 153, 153);
-		font-size: 1rem;
-		margin-top: 20px;
-		font-family: 'Courier New', Courier, monospace;
-		border: 1px solid rgb(62, 62, 62);
-		padding: 10px 15px;
-		min-width: 200px;
-		text-align: center;
-		border-radius: 8px;
-	}
+
 
 	.touch {
 		flex: 1; /* Équilibre les touches blanches */
@@ -376,4 +366,79 @@
 		left: 467px;
 		top: 0;
 	}
+        	.activeNoteDisplay {
+		color: rgb(155, 153, 153);
+		font-size: 1rem;
+		margin-top: 20px;
+		font-family: 'Courier New', Courier, monospace;
+		border: 1px solid rgb(62, 62, 62);
+		padding: 10px 15px;
+		min-width: 200px;
+		text-align: center;
+		border-radius: 8px;
+	}
+
+@media (orientation: landscape) {
+        .container-interface{
+                margin-top: 5px;
+        }
+     .wrapper__oscillator {
+        flex-direction: row;
+                width: 75%;
+        }
+        .keyboard {
+                margin-top: 100px;
+                width: 500px;
+                height: 150px;
+        }
+        .touch-black {
+                width: 30px;
+        }
+      
+        .touch-black:nth-child(1) {
+		left: 26px; 
+		top: 0;
+	}
+
+	.touch-black:nth-child(2) {
+		left: 73px;
+		top: 0;
+	}
+
+	.touch-black:nth-child(3) {
+		left: 160px;
+		top: 0;
+	}
+	.touch-black:nth-child(4) {
+		left: 205px;
+		top: 0;
+	}
+	.touch-black:nth-child(5) {
+		left: 245px;
+		top: 0;
+	}
+	.touch-black:nth-child(6) {
+		left: 332px;
+		top: 0;
+	}
+	.touch-black:nth-child(7) {
+		left: 382px;
+		top: 0;
+	}
+        	.activeNoteDisplay {
+		color: rgb(155, 153, 153);
+		font-size: 0.5rem;
+		margin-top: 45px;
+		font-family: 'Courier New', Courier, monospace;
+                border: none;
+		padding: 10px 15px;
+		min-width: 200px;
+		text-align: center;
+		border-radius: 8px;
+	}
+
+}
+
 </style>
+
+
