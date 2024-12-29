@@ -1,265 +1,379 @@
 <script>
-    import * as Tone from 'tone';
+	import * as Tone from 'tone';
 
-    let synth;
-    let autoWah;
-    let chorus;
-    let reverb;
-    let useReverb = false;
-    let useChorus = false;
-    let useWah = false;
-    let decay = 2;
+	let synth;
+	let autoWah;
+	let chorus;
+	let reverb;
+	let useReverb = false;
+	let useChorus = false;
+	let useWah = false;
+	let decay = 2;
 
-    let activeReverb = false;
-    let activeChorus = false;
-    let activeWah = false;
+	let activeReverb = false;
+	let activeChorus = false;
+	let activeWah = false;
 
-    // Contrôles pour les oscillateurs
-    const oscillatorTypes = ['sine', 'square', 'sawtooth', 'triangle', 'pulse'];
-    let selectedOscillator = 'sine';
-    let frequency = 440;
-    let detune = 0;
-    let pulseWidth = 0.5;
-    let attack = 0.01;
-    let release = 1;
+	let activeNote = 'Note'; // Variable pour stocker la note jouée
 
-    function play(note) {
-        if (Tone.context.state !== 'running') {
-            Tone.start();
-        }
+	// Contrôles pour les oscillateurs
+	const oscillatorTypes = ['sine', 'square', 'sawtooth', 'triangle'];
+	let selectedOscillator = 'sine';
+	let frequency = 440;
+	let detune = 0;
+	// let pulseWidth = 0.5;
+	let attack = 0.01;
+	let release = 1;
 
-        if (!synth) {
-            synth = new Tone.Synth({
-                oscillator: { type: selectedOscillator, width: pulseWidth },
-                envelope: { attack, release },
-            });
-        } else {
-            synth.oscillator.type = selectedOscillator;
-            if (selectedOscillator === 'pulse') {
-                synth.oscillator.width = pulseWidth;
-            }
-            synth.oscillator.frequency.value = frequency;
-            synth.oscillator.detune.value = detune;
-            synth.envelope.attack = attack;
-            synth.envelope.release = release;
-        }
+	function play(note) {
+		if (Tone.context.state !== 'running') {
+			Tone.start();
+		}
 
-        if (!autoWah) autoWah = new Tone.AutoWah(50, 6, -90);
-        if (!chorus) chorus = new Tone.Chorus(10, 4.5, 0.5);
-        if (!reverb) reverb = new Tone.Reverb({ decay }).toDestination();
+		activeNote = note;
 
-        // Connect effects conditionally
-        synth.disconnect();
+		if (!synth) {
+			synth = new Tone.Synth({
+				oscillator: { type: selectedOscillator },
+				envelope: { attack, release }
+			});
+		} else {
+			synth.oscillator.type = selectedOscillator;
 
-        let effectsChain = synth;
+			synth.oscillator.frequency.value = frequency;
+			synth.oscillator.detune.value = detune;
+			synth.envelope.attack = attack;
+			synth.envelope.release = release;
+		}
 
-        if (useWah) {
-            effectsChain.connect(autoWah);
-            effectsChain = autoWah;
-        }
-        if (useChorus) {
-            effectsChain.connect(chorus);
-            effectsChain = chorus;
-        }
-        if (useReverb) {
-            effectsChain.connect(reverb);
-        } else {
-            effectsChain.connect(Tone.Destination);
-        }
+		if (!autoWah) autoWah = new Tone.AutoWah(50, 6, -90);
+		if (!chorus) chorus = new Tone.Chorus(10, 4.5, 0.5);
+		if (!reverb) reverb = new Tone.Reverb({ decay }).toDestination();
 
-        synth.triggerAttackRelease(note, '8n');
-    }
+		// Connect effects conditionally
+		synth.disconnect();
 
-    function toggleReverb() {
-        useReverb = !useReverb;
-        activeReverb = !activeReverb;
-    }
+		let effectsChain = synth;
 
-    function toggleChorus() {
-        useChorus = !useChorus;
-        activeChorus = !activeChorus;
-    }
+		if (useWah) {
+			effectsChain.connect(autoWah);
+			effectsChain = autoWah;
+		}
+		if (useChorus) {
+			effectsChain.connect(chorus);
+			effectsChain = chorus;
+		}
+		if (useReverb) {
+			effectsChain.connect(reverb);
+		} else {
+			effectsChain.connect(Tone.Destination);
+		}
 
-    function toggleWah() {
-        useWah = !useWah;
-        activeWah = !activeWah;
-    }
+		synth.triggerAttackRelease(note, '8n');
+	}
+
+	function toggleReverb() {
+		useReverb = !useReverb;
+		activeReverb = !activeReverb;
+	}
+
+	function toggleChorus() {
+		useChorus = !useChorus;
+		activeChorus = !activeChorus;
+	}
+
+	function toggleWah() {
+		useWah = !useWah;
+		activeWah = !activeWah;
+	}
 </script>
 
+<!-- -----------------------------Clavier-------------------------------------------- -->
 
-        <!-- Interface utilisateur -->
-        <div>
-                <!-- Contrôle des oscillateurs -->
-                <label for="oscillator-type">Type d'oscillateur :</label>
-                <select id="oscillator-type" bind:value={selectedOscillator}>
-                        {#each oscillatorTypes as type}
-                                <option value={type}>{type}</option>
-                        {/each}
-                </select>
+<div class="container">
+	<div class="container-interface">
+		<div class="wrapper__oscillator">
+			<label for="oscillator-type">Type d'oscillateur :</label>
+			<select id="oscillator-type" bind:value={selectedOscillator}>
+				{#each oscillatorTypes as type}
+					<option value={type}>{type}</option>
+				{/each}
+			</select>
 
-                <!-- Fréquence -->
-                <label>
-                        Fréquence (Hz): {frequency}
-                        <input type="range" min="20" max="2000" step="1" bind:value={frequency} />
-                </label>
+			<label>
+				Fréquence (Hz): {frequency}
+				<input class="slider" type="range" min="20" max="2000" step="1" bind:value={frequency} />
+			</label>
 
-                <!-- Détune -->
-                <label>
-                        Détune (cents): {detune}
-                        <input type="range" min="-1200" max="1200" step="1" bind:value={detune} />
-                </label>
+			<label>
+				Détune (cents): {detune}
+				<input class="slider" type="range" min="-1200" max="1200" step="1" bind:value={detune} />
+			</label>
 
-                <!-- Largeur d'impulsion -->
-                {#if selectedOscillator === 'pulse'}
-                        <label>
-                                Largeur d'impulsion: {pulseWidth.toFixed(2)}
-                                <input type="range" min="0.01" max="1" step="0.01" bind:value={pulseWidth} />
-                        </label>
-                {/if}
+			<label>
+				Attaque: {attack}s
+				<input class="slider" type="range" min="0.01" max="2" step="0.01" bind:value={attack} />
+			</label>
+			<label>
+				Relâchement: {release}s
+				<input class="slider" type="range" min="0.1" max="5" step="0.1" bind:value={release} />
+			</label>
+		</div>
+		<div class="wrapper__buttonEffects">
+			<button on:click={toggleReverb} class={activeReverb ? 'active-button' : 'button-effect'}>
+				Reverb
+			</button>
+			<button on:click={toggleChorus} class={activeChorus ? 'active-button' : 'button-effect'}>
+				Chorus
+			</button>
+			<button on:click={toggleWah} class={activeWah ? 'active-button' : 'button-effect'}>
+				Wah
+			</button>
+		</div>
+	</div>
 
-                <!-- Enveloppe -->
-                <label>
-                        Attaque: {attack}s
-                        <input type="range" min="0.01" max="2" step="0.01" bind:value={attack} />
-                </label>
-                <label>
-                        Relâchement: {release}s
-                        <input type="range" min="0.1" max="5" step="0.1" bind:value={release} />
-                </label>
-        </div>
+	<div class="keyboard">
+		{#each ['C#4 - DO#4', 'D#4 - RÉ#4', 'F#4 - F#4', 'G#4 - SOL#4', 'A#4 - LA#4', 'C#5 - DO#4', 'D#5 - RÉ#5'] as note}
+			<button on:click={() => play(note)} class="touch-black">{note}</button>
+		{/each}
 
+		{#each ['C4 - DO4', 'D4 - RÉ4', 'E4 - MI4', 'F4 - FA4', 'G4 - SOL4', 'A4 - LA4', 'B4 - SI4', 'C5 - DO5', 'D5 - RÉ5', 'E5 - MI5', 'F5 - FA5'] as note}
+			<button on:click={() => play(note)} class="touch">{note}</button>
+		{/each}
+	</div>
 
-  <div>
-    <button 
-        on:click={toggleReverb} 
-        class="{activeReverb ? 'active-button' : ''}">
-        Reverb
-    </button>
-    <button 
-        on:click={toggleChorus} 
-        class="{activeChorus ? 'active-button' : ''}">
-        Chorus
-    </button>
-    <button 
-        on:click={toggleWah} 
-        class="{activeWah ? 'active-button' : ''}">
-        Wah
-    </button>
+	<p class="activeNoteDisplay">{activeNote}</p>
 </div>
 
-        <!-- Clavier -->
-        <div class="container-keyboard">
-                <!-- Notes noires -->
-                <div class="keyboard-black up left">
-                        {#each ['C#4', 'D#4'] as note}
-                                <button on:click={() => play(note)} class="touch-black black border-black">{note}</button>
-                        {/each}
-                </div>
+<style>
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		height: 100vh;
+		background-color: #0b0b0b;
+	}
+	.active-button {
+		background: linear-gradient(to top, #4136e4, #a8afe8);
+		color: black;
+		padding: 10px 30px;
+		max-width: 100px;
+		border: none;
+		box-shadow: inset 0px 0px 10px 0px #000000;
+	}
+	.button-effect {
+		background: linear-gradient(to top, #ffd700, #d8ce90);
+		color: black;
+		padding: 10px 30px;
+		max-width: 100px;
+		border: none;
+		box-shadow: inset 0px 0px 10px 0px #000000;
+		font-weight: 400;
+	}
+	.container-interface {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 700px;
+		height: 500px;
+		gap: 1rem;
+		margin-top: 50px;
+	}
+	.wrapper__oscillator {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 0px;
+		padding: 20px 20px;
+		border: 1px solid rgb(54, 53, 53);
+		border-radius: 10px;
+		box-shadow: 0px 0px 10px 0px #000000;
+	}
+	select {
+		appearance: none; /* Supprime le style natif */
+		-webkit-appearance: none; /* Supprime le style natif pour Webkit */
+		-moz-appearance: none; /* Supprime le style natif pour Firefox */
+		color: black;
+		padding: 7px 10px;
+		text-align: center;
+		max-width: 100px;
+		border: none;
+		box-shadow: inset 0px 0px 10px 1px #000000;
+		font-weight: 400;
+		background: linear-gradient(to top, #ffd700, #d8ce90);
+	}
 
-                <div class="keyboard-black up center">
-                        {#each ['F#4', 'G#4', 'A#4'] as note}
-                                <button on:click={() => play(note)} class="touch-black black border-black">{note}</button>
-                        {/each}
-                </div>
+	select:focus {
+		outline: none;
+		border-color: #007bff; /* Couleur de bordure au focus */
+		box-shadow: 0 0 4px #007bff;
+	}
 
-                <div class="keyboard-black up right">
-                        {#each ['C#5', 'D#5'] as note}
-                                <button on:click={() => play(note)} class="touch-black black border-black">{note}</button>
-                        {/each}
-                </div>
+	.slider {
+		appearance: none;
+		-webkit-appearance: none;
+		width: 50%; /* Largeur complète */
+		height: 5px; /* Épaisseur de la barre */
+		background: #2c2c2c; /* Couleur de la barre */
+		border-radius: 4px; /* Bords arrondis */
+		outline: none; /* Retirer la bordure lors de la sélection */
+		transition: background 0.3s; /* Animation sur la couleur */
+		box-shadow: inset 0 2px 3px 1px rgba(0, 0, 0, 0.3); /* Ombre légère */
+		border: 1px solid rgb(52, 52, 52);
+	}
 
-                <!-- Notes blanches -->
-                <div class="keyboard down">
-                        {#each ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5'] as note}
-                                <button on:click={() => play(note)} class="touch white border">{note}</button>
-                        {/each}
-                </div>
-        </div>
+	.slider:hover {
+		background: #323232; /* Changement de couleur au survol */
+	}
 
-        <style>
-                .active-button{
-                        background-color: blue;
-                }
-                .container-keyboard {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        width: 80%;
-                        height: 400px;
-                        position: relative;
-                        background-color: rgb(29, 28, 28);
-                        margin: 0 auto;
-                }
-                .keyboard {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        gap: 1px;
-                }
-                .keyboard-black {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        gap: 1px;
-                        max-height: 90px;
-                        position: absolute;
-                        top: 105px;
-                }
-                .left {
-                        left: 330px;
-                }
-                .center {
-                        left: 480px;
-                }
-                .right {
-                        left: 680px;
-                }
-                .down {
-                        z-index: 1;
-                        position: absolute;
-                        bottom: 125px;
-                        left: 300px;
-                }
-                .up {
-                        z-index: 2;
-                }
-                .border {
-                        border-top-left-radius: 0px;
-                        border-bottom-right-radius: 10px;
-                        border-bottom-left-radius: 10px;
-                }
-                .border-black {
-                        border-top-left-radius: 0px;
-                        border-top-right-radius: 0px;
-                        border-bottom-right-radius: 5px;
-                        border-bottom-left-radius: 5px;
-                }
-                .touch {
-                        display: flex;
-                        align-items: end;
-                        justify-content: end;
-                        border: none;
-                        width: 50px;
-                        height: 170px;
-                        font-size: 0.7rem;
-                        font-weight: 100;
-                }
-                .touch-black {
-                        display: flex;
-                        align-items: end;
-                        justify-content: end;
-                        border: none;
-                        width: 50px;
-                        height: 85px;
-                        font-size: 0.7rem;
-                        font-weight: 100;
-                }
-                .white {
-                        background-color: white;
-                }
-                .black {
-                        background-color: black;
-                        color: white;
-                }
-        </style>
+	/* Style pour le bouton (thumb) */
+	.slider::-webkit-slider-thumb {
+		-webkit-appearance: none; /* Désactiver le style par défaut pour Safari */
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		background: linear-gradient(45deg, #222222, #565656);
+		border-radius: 20%;
+		cursor: pointer;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	}
+
+	.slider::-moz-range-thumb {
+		width: 20px;
+		height: 20px;
+		background: linear-gradient(45deg, #222222, #565656);
+		border-radius: 20%;
+		cursor: pointer;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	}
+
+	/* Pour un effet visuel lorsqu'il est actif */
+	.slider::-webkit-slider-thumb:active {
+		transform: scale(1.2); /* Agrandir légèrement le bouton */
+		background: linear-gradient(45deg, #3d3d3d, #e36565);
+	}
+
+	.wrapper__buttonEffects {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+		height: 50px;
+		width: auto;
+		padding: 20px;
+		border: 1px solid rgb(54, 53, 53);
+		border-radius: 10px;
+		box-shadow: 0px 0px 10px 0px #000000;
+	}
+
+	label {
+		color: rgba(126, 126, 126, 0.703);
+		padding: 9px;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 0.7rem;
+	}
+
+	.keyboard {
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 600px;
+		height: 250px;
+		background:  #ffd90024;
+		gap: 2px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		margin-top: 60px;
+		border: 10px solid rgb(25, 16, 16);
+		border-radius: 8px;
+	}
+	.activeNoteDisplay {
+		color: rgb(155, 153, 153);
+		font-size: 1rem;
+		margin-top: 20px;
+		font-family: 'Courier New', Courier, monospace;
+		border: 1px solid rgb(62, 62, 62);
+		padding: 10px 15px;
+		min-width: 200px;
+		text-align: center;
+		border-radius: 8px;
+	}
+
+	.touch {
+		flex: 1; /* Équilibre les touches blanches */
+		height: 100%;
+		background: linear-gradient(45deg, rgb(216, 216, 194), #3c3838);
+		border: 1px solid #000;
+		box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.3);
+		color: transparent;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+		z-index: 1;
+		border: none;
+	}
+	.touch:active {
+		background: linear-gradient(45deg, #0e2f7b, rgb(80, 89, 208));
+		color: transparent;
+		display: flex;
+		align-items: last baseline;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.touch-black {
+		color: transparent;
+		position: absolute;
+		width: 40px;
+		height: 60%;
+		background: linear-gradient(45deg, rgb(37, 37, 37), #000000);
+		box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.5);
+		z-index: 2;
+		border: none;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+	.touch-black:active {
+		background: linear-gradient(45deg, #bbb910, rgb(138, 179, 5));
+		color: transparent;
+		display: flex;
+		align-items: last baseline;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.touch-black:nth-child(1) {
+		left: 32px; /* Ajuste pour aligner avec la touche blanche */
+		top: 0;
+	}
+
+	.touch-black:nth-child(2) {
+		left: 86px;
+		top: 0;
+	}
+
+	.touch-black:nth-child(3) {
+		left: 195px;
+		top: 0;
+	}
+	.touch-black:nth-child(4) {
+		left: 250px;
+		top: 0;
+	}
+	.touch-black:nth-child(5) {
+		left: 303px;
+		top: 0;
+	}
+	.touch-black:nth-child(6) {
+		left: 412px;
+		top: 0;
+	}
+	.touch-black:nth-child(7) {
+		left: 467px;
+		top: 0;
+	}
+</style>
