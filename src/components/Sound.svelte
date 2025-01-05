@@ -379,7 +379,7 @@
 
 	@media screen and (max-width: 768px) {
 		.container {
-			height: 100%;
+			height: 100vh;
 		}
 		.container-interface {
 			margin-top: 20px;
@@ -403,10 +403,14 @@
 			margin-top: 0px;
 		}
 		.keyboard {
-			margin-top: 195px;
+			margin-top: 105px;
 			width: 300px;
 			height: 150px;
 			border: none;
+		}
+		.touch {
+			height: 100%;
+			flex: 1 1 0; 
 		}
 		.touch-black {
 			width: 20px;
@@ -445,7 +449,7 @@
 		.activeNoteDisplay {
 			color: rgb(155, 153, 153);
 			font-size: 0.5rem;
-			margin-top: -40px;
+			margin-top: -20px;
 			font-family: 'Courier New', Courier, monospace;
 			border: none;
 			padding: 10px 15px;
