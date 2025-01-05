@@ -282,7 +282,7 @@
 		align-items: center;
 		width: 600px;
 		height: 250px;
-		background:  #ffd90024;
+		background: #ffd90024;
 		gap: 2px;
 		position: absolute;
 		top: 50%;
@@ -292,7 +292,6 @@
 		border: 10px solid rgb(25, 16, 16);
 		border-radius: 8px;
 	}
-
 
 	.touch {
 		flex: 1; /* Équilibre les touches blanches */
@@ -366,7 +365,7 @@
 		left: 467px;
 		top: 0;
 	}
-        	.activeNoteDisplay {
+	.activeNoteDisplay {
 		color: rgb(155, 153, 153);
 		font-size: 1rem;
 		margin-top: 20px;
@@ -378,67 +377,81 @@
 		border-radius: 8px;
 	}
 
-@media screen and (max-width: 768px)  {
-        .container-interface{
-                margin-top: 5px;
-        }
-     .wrapper__oscillator {
-        flex-direction: row;
-                width: 75%;
-        }
-        .keyboard {
-                margin-top: 100px;
-                width: 500px;
-                height: 150px;
-        }
-        .touch-black {
-                width: 30px;
-        }
-      
-        .touch-black:nth-child(1) {
-		left: 26px; 
-		top: 0;
-	}
+	@media screen and (max-width: 768px) {
+		.container {
+			height: 100%;
+		}
+		.container-interface {
+			margin-top: 20px;
+			width: 320px;
+			height: 500px;
+		}
+		.wrapper__buttonEffects {
+			width: 50%;
+			margin-top: 0px;
+			border: none;
+			gap: 3px;
+		}
+		.button-effect {
+			max-width: 100px;
+			min-height: 15px;
+		}
+		.wrapper__oscillator {
+			flex-direction: column;
+			width: 85%;
+			padding: 0;
+			margin-top: 0px;
+		}
+		.keyboard {
+			margin-top: 195px;
+			width: 300px;
+			height: 150px;
+			border: none;
+		}
+		.touch-black {
+			width: 20px;
+		}
 
-	.touch-black:nth-child(2) {
-		left: 73px;
-		top: 0;
-	}
+		.touch-black:nth-child(1) {
+			left: 20px;
+			top: 0;
+		}
 
-	.touch-black:nth-child(3) {
-		left: 160px;
-		top: 0;
-	}
-	.touch-black:nth-child(4) {
-		left: 205px;
-		top: 0;
-	}
-	.touch-black:nth-child(5) {
-		left: 245px;
-		top: 0;
-	}
-	.touch-black:nth-child(6) {
-		left: 332px;
-		top: 0;
-	}
-	.touch-black:nth-child(7) {
-		left: 382px;
-		top: 0;
-	}
-        	.activeNoteDisplay {
-		color: rgb(155, 153, 153);
-		font-size: 0.5rem;
-		margin-top: 45px;
-		font-family: 'Courier New', Courier, monospace;
-                border: none;
-		padding: 10px 15px;
-		min-width: 200px;
-		text-align: center;
-		border-radius: 8px;
-	}
+		.touch-black:nth-child(2) {
+			left: 48px;
+			top: 0;
+		}
 
-}
-
+		.touch-black:nth-child(3) {
+			left: 97px;
+			top: 0;
+		}
+		.touch-black:nth-child(4) {
+			left: 135px;
+			top: 0;
+		}
+		.touch-black:nth-child(5) {
+			left: 160px;
+			top: 0;
+		}
+		.touch-black:nth-child(6) {
+			left: 210px;
+			top: 0;
+		}
+		.touch-black:nth-child(7) {
+			left: 242px;
+			top: 0;
+		}
+		.activeNoteDisplay {
+			color: rgb(155, 153, 153);
+			font-size: 0.5rem;
+			margin-top: -40px;
+			font-family: 'Courier New', Courier, monospace;
+			border: none;
+			padding: 10px 15px;
+			min-width: 200px;
+			text-align: center;
+			border-radius: 8px;
+		}
+	}
 </style>
-
-
