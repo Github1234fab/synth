@@ -130,9 +130,7 @@
 				Wah
 			</button>
 		</div>
-	</div>
-
-	<div class="keyboard">
+			<div class="keyboard">
 		{#each ['C#4 - DO#4', 'D#4 - RÉ#4', 'F#4 - F#4', 'G#4 - SOL#4', 'A#4 - LA#4', 'C#5 - DO#4', 'D#5 - RÉ#5'] as note}
 			<button on:click={() => play(note)} class="touch-black">{note}</button>
 		{/each}
@@ -143,6 +141,10 @@
 	</div>
 
 	<p class="activeNoteDisplay">{activeNote}</p>
+	</div>
+
+
+
 </div>
 
 <style>
@@ -281,14 +283,10 @@
 		display: flex;
 		align-items: center;
 		width: 600px;
-		height: 250px;
+		min-height: 250px;
 		background: #ffd90024;
 		gap: 2px;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		margin-top: 60px;
+		margin-top: 20px;
 		border: 10px solid rgb(25, 16, 16);
 		border-radius: 8px;
 	}
@@ -403,9 +401,9 @@
 			margin-top: 0px;
 		}
 		.keyboard {
-			margin-top: 105px;
+			margin-top: 80px;
 			width: 300px;
-			height: 150px;
+			min-height: 130px;
 			border: none;
 		}
 		.touch {
@@ -449,7 +447,7 @@
 		.activeNoteDisplay {
 			color: rgb(155, 153, 153);
 			font-size: 0.5rem;
-			margin-top: -20px;
+			margin-top: 0px;
 			font-family: 'Courier New', Courier, monospace;
 			border: none;
 			padding: 10px 15px;
