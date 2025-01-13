@@ -154,7 +154,7 @@
 		align-items: center;
 		justify-content: flex-start;
 		height: 100vh;
-		background-color: #0b0b0b;
+		background-color: #181818;
 	}
 	.active-button {
 		background: linear-gradient(to top, #4136e4, #a8afe8);
